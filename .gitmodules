@@ -1,0 +1,6 @@
+[submodule "qzxing"]
+	path = qzxing
+	url = https://github.com/ftylitak/qzxing.git
+[submodule "qrcodegen"]
+	path = qrcodegen
+	url = https://github.com/nayuki/QR-Code-generator.git

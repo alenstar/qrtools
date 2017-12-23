@@ -1,0 +1,6 @@
+.idea
+cmake-build-*
+build
+_build
+.build
+*.pro.user
