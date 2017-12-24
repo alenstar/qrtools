@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui multimedia multimediawidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -24,18 +24,30 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+DEFINES += ELPP_QT_LOGGING    \
+          ELPP_FEATURE_ALL \
+          ELPP_STL_LOGGING   \
+          ELPP_STRICT_SIZE_CHECK ELPP_UNICODE \
+          ELPP_MULTI_LOGGER_SUPPORT \
+          ELPP_THREAD_SAFE
+
+QMAKE_CXXFLAGS += -std=c++11
+
+INCLUDEPATH += easyloggingpp/src \
+                qrcodegen/cpp \
+                qzxing/src
 
 SOURCES += \
         main.cpp \
         qrdialog.cpp \
-    easylogging++.cc \
+    easyloggingpp/src/easylogging++.cc \
     qrcodegen/cpp/BitBuffer.cpp \
     qrcodegen/cpp/QrCode.cpp \
     qrcodegen/cpp/QrSegment.cpp
 
 HEADERS += \
         qrdialog.h \
-    easylogging++.h \
+    easyloggingpp/src/easylogging++.h \
     qrcodegen/cpp/BitBuffer.hpp \
     qrcodegen/cpp/QrCode.hpp \
     qrcodegen/cpp/QrSegment.hpp

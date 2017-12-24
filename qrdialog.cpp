@@ -1,8 +1,13 @@
 #include "qrdialog.h"
 #include "ui_qrdialog.h"
 #include "logdef.h"
+
+#include "easylogging++.h"
+
+#include <QMessageBox>
 #include <QPainter>
 #include <QFileDialog>
+
 #include <vector>
 
 void paintQR(QPainter &painter, const QSize sz, const QrCode &qr, QColor fg)
@@ -61,7 +66,7 @@ QrDialog::~QrDialog()
 void QrDialog::on_btnFile_clicked()
 {
     QString filename = QFileDialog::getOpenFileName(this, tr("Select Image"),
-                QString::fromLocal8Bit(qgetenv("HOME")), "Images (*.png *.jpg *.bmp)");
+                QString::fromLocal8Bit(qgetenv("HOME")), tr("Images (*.png *.jpg *.bmp)"));
     LOGD("file name: %s", filename.toLocal8Bit().data());
     if(!filename.isEmpty()) {
         QPixmap pixmap(filename);
@@ -122,6 +127,51 @@ void QrDialog::on_btnEncode_clicked()
         // QImage img = qrimage.scaled(ui->qrcode->width(), ui->qrcode->height(), Qt::KeepAspectRatio);
         ui->qrcode->setPixmap(QPixmap::fromImage(qrimage));
 
+        // QString result = asciiQR(qr, "X", "O");
+        // LOGD("RESULT: \n%s", result.toUtf8().data());
+    }
+}
+
+void QrDialog::on_btnSave_clicked()
+{
+    QString filename = QFileDialog::getSaveFileName(this, tr("Save Image"),
+                            QString::fromLocal8Bit(qgetenv("HOME")), tr("Images (*.png *.jpg *.bmp)"));
+    if (filename.isEmpty()) {
+        return;
+    }
+    /*
+    if (QFile::exists(filename)) {
+        LOG(ERROR) << "the file is exists: " << filename;
+        QMessageBox::StandardButton btn = QMessageBox::question(this,
+                              tr("Overwrite the file?"), tr("The file already exists. Do you want to overwrite it?"),
+                              QMessageBox::Ok | QMessageBox::No);
+        if (btn == QMessageBox::No) {
+            return;
+        }
+    }
+    */
+
+    QString text = ui->qrtext->toPlainText();
+    if(!text.isEmpty()) {
+        LOGD("TEXT: %s", text.toUtf8().data());
+        // QrCode qr = QrCode::encodeText(text.toLocal8Bit().data(), QrCode::Ecc::MEDIUM);
+        // qr.toSvgString(4);
+        std::vector<QrSegment> segs = QrSegment::makeSegments(text.toUtf8().data());
+        QrCode qr = QrCode::encodeSegments(
+                segs, QrCode::Ecc::HIGH, 5, 5, 2, false);
+        QImage qrimage(QSize(qr.getSize() * 8, qr.getSize() * 8), QImage::Format_ARGB32_Premultiplied);
+
+        QPainter qrPainter(&qrimage);
+        qrPainter.initFrom(this);
+        qrPainter.setRenderHint(QPainter::Antialiasing, true);
+        qrPainter.eraseRect(qrimage.rect());
+        paintQR(qrPainter, qrimage.size(), qr, QColor(0x00, 0x00, 0x00));
+        qrPainter.end();
+
+        if(!qrimage.save(filename, "png")) {
+            LOG(ERROR) << "save image to file failed: " << filename;
+            return;
+        }
         // QString result = asciiQR(qr, "X", "O");
         // LOGD("RESULT: \n%s", result.toUtf8().data());
     }

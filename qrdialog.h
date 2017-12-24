@@ -26,6 +26,8 @@ private slots:
 
     void on_btnEncode_clicked();
 
+    void on_btnSave_clicked();
+
 private:
     Ui::QrDialog *ui;
     QImage* image_;

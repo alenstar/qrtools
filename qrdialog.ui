@@ -24,6 +24,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="btnSave">
+       <property name="text">
+        <string>&amp;Save</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="btnDecode">
        <property name="text">
         <string>&amp;Decode</string>
@@ -33,7 +40,7 @@
      <item>
       <widget class="QPushButton" name="btnEncode">
        <property name="text">
-        <string>Encode</string>
+        <string>&amp;Encode</string>
        </property>
       </widget>
      </item>
