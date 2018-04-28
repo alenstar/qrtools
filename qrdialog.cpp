@@ -248,26 +248,26 @@ void QrDialog::on_btnSave_clicked()
 
 void QrDialog::setCamera(const QCameraInfo *cameraInfo)
 {
-    if(imageCapture_) {
-        delete imageCapture_;
-    }
-    if (camera_) {
-        camera_->stop();
-        delete camera_;
-    }
     if(cameraInfo == nullptr) {
         this->vfinder_->hide();
         this->ui->qrcode->show();
        return;
     }
 
-    camera_ = new QCamera(*cameraInfo);
+    if(imageCapture_) {
+        delete imageCapture_;
+    }
+    if (camera_) {
+        camera_->stop();
+    } else {
+        camera_ = new QCamera(*cameraInfo);
+    }
+
 
     connect(camera_, &QCamera::stateChanged, this,
             &QrDialog::updateCameraState);
     connect(camera_, QOverload<QCamera::Error>::of(&QCamera::error), this,
             &QrDialog::displayCameraError);
-
     //mediaRecorder = new QMediaRecorder(camera);
     //connect(mediaRecorder, &QMediaRecorder::stateChanged, this,
     //        &Camera::updateRecorderState);
@@ -294,9 +294,15 @@ void QrDialog::setCamera(const QCameraInfo *cameraInfo)
     //    0, (camera->isCaptureModeSupported(QCamera::CaptureStillImage)));
     //ui->captureWidget->setTabEnabled(
     //    1, (camera->isCaptureModeSupported(QCamera::CaptureVideo)));
-    updateCaptureMode();
 
      this->camera_->setViewfinder(this->vfinder_);
+     QCameraViewfinderSettings viewfinderSettings;
+  // viewfinderSettings.setResolution(640, 480);
+  viewfinderSettings.setMinimumFrameRate(15.0);
+  viewfinderSettings.setMaximumFrameRate(30.0);
+    this->camera_->setViewfinderSettings(viewfinderSettings);
+
+    updateCaptureMode();
     camera_->start();
     this->vfinder_->show();
         this->ui->qrcode->hide();
@@ -356,7 +362,7 @@ void QrDialog::displayCaptureError(int id,
   {
       //int tabIndex = ui->captureWidget->currentIndex();
       //QCamera::CaptureModes captureMode = tabIndex == 0 ? QCamera::CaptureStillImage : QCamera::CaptureVideo;
-      QCamera::CaptureModes captureMode = QCamera::CaptureViewfinder;
+      QCamera::CaptureModes captureMode = QCamera::CaptureVideo;
 
       if (camera_->isCaptureModeSupported(captureMode))
           camera_->setCaptureMode(captureMode);
