@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui multimedia multimediawidgets
+QT       += core gui multimedia multimediawidgets serialport network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -43,14 +43,16 @@ SOURCES += \
     easyloggingpp/src/easylogging++.cc \
     qrcodegen/cpp/BitBuffer.cpp \
     qrcodegen/cpp/QrCode.cpp \
-    qrcodegen/cpp/QrSegment.cpp
+    qrcodegen/cpp/QrSegment.cpp \
+    utils.c
 
 HEADERS += \
         qrdialog.h \
     easyloggingpp/src/easylogging++.h \
     qrcodegen/cpp/BitBuffer.hpp \
     qrcodegen/cpp/QrCode.hpp \
-    qrcodegen/cpp/QrSegment.hpp
+    qrcodegen/cpp/QrSegment.hpp \
+    utils.h
 
 FORMS += \
         qrdialog.ui
